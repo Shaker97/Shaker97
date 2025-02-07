@@ -1,3 +1,5 @@
+git clone https://github.com/Shaker97/German-Vocabulary-PDF.git
+generate_pdf.py
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
