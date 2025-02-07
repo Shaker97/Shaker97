@@ -1,0 +1,85 @@
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+
+# اسم ملف PDF
+pdf_path = "German_Vocabulary.pdf"
+c = canvas.Canvas(pdf_path, pagesize=A4)
+width, height = A4
+
+# عنوان الملف
+c.setFont("Helvetica-Bold", 16)
+c.drawCentredString(width / 2, height - 50, "100 كلمات ألمانية مع ترجمتها")
+
+# تحريك الموضع للأسفل
+y_position = height - 80
+
+# قائمة 100 كلمة مع الترجمة
+vocabulary = [
+    ("Haus", "بيت"), ("Auto", "سيارة"), ("Buch", "كتاب"), ("Stuhl", "كرسي"),
+    ("Tisch", "طاولة"), ("Hund", "كلب"), ("Katze", "قطة"), ("Baum", "شجرة"),
+    ("Fenster", "نافذة"), ("Tür", "باب"), ("Stadt", "مدينة"), ("Land", "دولة"),
+    ("Schule", "مدرسة"), ("Lehrer", "معلم"), ("Schüler", "طالب"), ("Arbeit", "عمل"),
+    ("Freund", "صديق"), ("Freundin", "صديقة"), ("Essen", "طعام"), ("Trinken", "شراب"),
+    ("Wasser", "ماء"), ("Milch", "حليب"), ("Brot", "خبز"), ("Apfel", "تفاحة"),
+    ("Banane", "موز"), ("Birne", "كمثرى"), ("Kaffee", "قهوة"), ("Tee", "شاي"),
+    ("Zucker", "سكر"), ("Salz", "ملح"), ("Berg", "جبل"), ("See", "بحيرة"),
+    ("Fluss", "نهر"), ("Meer", "بحر"), ("Himmel", "سماء"), ("Erde", "أرض"),
+    ("Luft", "هواء"), ("Wald", "غابة"), ("Straße", "شارع"), ("Platz", "ساحة"),
+    ("Markt", "سوق"), ("Laden", "متجر"), ("Restaurant", "مطعم"), ("Café", "مقهى"),
+    ("Hotel", "فندق"), ("Zug", "قطار"), ("Bus", "حافلة"), ("Taxi", "تاكسي"),
+    ("Flughafen", "مطار"), ("Bahnhof", "محطة قطار"), ("Schiff", "سفينة"),
+    ("Flugzeug", "طائرة"), ("Brücke", "جسر"), ("Schwimmbad", "مسبح"),
+    ("Kino", "سينما"), ("Theater", "مسرح"), ("Museum", "متحف"), ("Bibliothek", "مكتبة"),
+    ("Apotheke", "صيدلية"), ("Krankenhaus", "مستشفى"), ("Arzt", "طبيب"),
+    ("Polizei", "شرطة"), ("Feuerwehr", "إطفاء"), ("Büro", "مكتب"), ("Schreibtisch", "مكتب الكتابة"),
+    ("Telefon", "هاتف"), ("Computer", "كمبيوتر"), ("Fernsehen", "تلفزيون"),
+    ("Musik", "موسيقى"), ("Film", "فيلم"), ("Foto", "صورة"), ("Bilder", "صور"),
+    ("Zeitschrift", "مجلة"), ("Zeitung", "جريدة"), ("Internet", "إنترنت"),
+    ("E-Mail", "بريد إلكتروني"), ("Post", "بريد"), ("Briefe", "رسائل"),
+    ("Briefmarke", "طابع بريدي"), ("Schreiben", "كتابة"), ("Lesen", "قراءة"),
+    ("Hören", "استماع"), ("Sehen", "رؤية"), ("Laufen", "جري"),
+    ("Fahren", "قيادة"), ("Schwimmen", "سباحة"), ("Spielen", "لعب"),
+    ("Arbeiten", "عمل"), ("Essen", "أكل"), ("Trinken", "شرب")
+]
+
+# إعداد الخط
+c.setFont("Helvetica", 12)
+
+# رسم الجدول
+row_height = 18
+col_widths = [100, 150]
+x_start = 30
+
+# رسم رأس الجدول
+headers = ["Deutsch", "Arabisch"]
+c.setFillColor(colors.grey)
+c.rect(x_start, y_position, sum(col_widths), row_height, fill=True, stroke=False)
+c.setFillColor(colors.white)
+for i, header in enumerate(headers):
+    c.drawCentredString(x_start + sum(col_widths[:i]) + col_widths[i] / 2, y_position + 7, header)
+y_position -= row_height
+
+# رسم بيانات الكلمات
+c.setFillColor(colors.black)
+for word in vocabulary:
+    german, arabic = word
+    row = [german, arabic]
+
+    # التحقق من المساحة وإضافة صفحة جديدة إذا لزم الأمر
+    if y_position < 50:
+        c.showPage()
+        y_position = height - 50
+        c.setFont("Helvetica", 12)
+
+    # رسم كل خلية
+    for i, text in enumerate(row):
+        c.rect(x_start + sum(col_widths[:i]), y_position, col_widths[i], row_height, stroke=True, fill=False)
+        c.drawCentredString(x_start + sum(col_widths[:i]) + col_widths[i] / 2, y_position + 7, text)
+
+    y_position -= row_height
+
+# حفظ الملف
+c.save()
+
+print("تم إنشاء الملف بنجاح: German_Vocabulary.pdf")
